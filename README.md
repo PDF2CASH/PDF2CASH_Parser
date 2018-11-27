@@ -1,11 +1,11 @@
-[![Build Status](https://travis-ci.org/PDF2CASH/PDF2CASH_PDFToInvoice.svg?branch=development)](https://travis-ci.org/PDF2CASH/PDF2CASH_PDFToInvoice)
-[![Coverage Status](https://coveralls.io/repos/github/PDF2CASH/PDF2CASH_PDFToInvoice/badge.svg?branch=development)](https://coveralls.io/github/PDF2CASH/PDF2CASH_PDFToInvoice?branch=master)
+[![Build Status](https://travis-ci.org/PDF2CASH/PDF2CASH_Parser.svg?branch=development)](https://travis-ci.org/PDF2CASH/PDF2CASH_Parser)
+[![Coverage Status](https://coveralls.io/repos/github/PDF2CASH/PDF2CASH_Parser/badge.svg?branch=development)](https://coveralls.io/github/PDF2CASH/PDF2CASH_Parser?branch=master)
 
 
-# PDF2CASH_PDFToInvoice
+# PDF2CASH_Parser
 
 ## Como compilar
-Antes de compilar, é necessário compilar as 2 bibliotecas utilizadas no projeto do Parser.
+Antes de compilar, é necessário a instalão dos pré-requisitos.
 
 ### Pré-requisitos
 
@@ -27,30 +27,9 @@ E instale.:
 
 > PROJDIR = pasta root do projeto onde foi clonado.
 
-### 2. QHTTP
-Vá na pasta do QHTTP, é encontrada no diretório:
 
-`PROJDIR/3rdparty/qhttp`
-
-Para compilação do QHTTP, primeiramente é necessário instalar as dependências exigidas.
-
-Execute o comando abaixo.:
-
-`$ ./update-dependencies.sh`
-
-Logo após, compile o QHTTP.:
-
-`$ qmake -r qhttp.pro`
-`$ make -j 8`
-
-E instale.:
-
-`$ sudo make install`
-
-> PROJDIR = pasta root do projeto onde foi clonado.
-
-### 3. Servidor
-Depois de ter compilado todos as bibliotecas utilizadas no projeto, agora por último, será o processo da compilação do servidor do parser.
+### 2 Servidor
+Depois de ter compilado todas bibliotecas necessárias no projeto, agora por último, será o processo da compilação do servidor do parser.
 
 Vá na pasta do Servidor, é encontrado no diretório:
 
