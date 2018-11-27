@@ -28,7 +28,7 @@ E instale.:
 > PROJDIR = pasta root do projeto onde foi clonado.
 
 
-### 2 Servidor
+### 2. Servidor
 Depois de ter compilado todas bibliotecas necessárias no projeto, agora por último, será o processo da compilação do servidor do parser.
 
 Vá na pasta do Servidor, é encontrado no diretório:
