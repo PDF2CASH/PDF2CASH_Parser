@@ -12,6 +12,19 @@
 
 using namespace stefanfrings;
 
+struct CORS_SETTINGS
+{
+    bool useOrigin;
+    bool useMethods;
+    bool useHeaders;
+    bool useMaxAge;
+
+    QString originData;
+    QString methodsData;
+    QString headersData;
+    int maxAgeData;
+};
+
 /**
   The request mapper dispatches incoming HTTP requests to controller classes
   depending on the requested path.
@@ -26,7 +39,7 @@ public:
       Constructor.
       @param parent Parent object
     */
-    RequestMapper(QObject* parent=0);
+    RequestMapper(QSettings* settingsCors, QObject* parent=0);
 
     /**
       Destructor.
@@ -41,8 +54,7 @@ public:
     void service(HttpRequest& request, HttpResponse& response);
 
 private:
-    pdf2cash::Parser* _parser;
-
+    CORS_SETTINGS* _settingCors;
 };
 
 #endif // REQUESTMAPPER_H

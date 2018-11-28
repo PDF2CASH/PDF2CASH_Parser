@@ -11,6 +11,8 @@
 
 #include "../parser/Parser.h"
 
+#include "../requestmapper.h"
+
 namespace stefanfrings {
 
 /**
@@ -49,7 +51,7 @@ public:
     ParserController();
 
     /** Generates the response */
-    void service(HttpRequest& request, HttpResponse& response, pdf2cash::Parser* parser);
+    void service(HttpRequest& request, HttpResponse& response, CORS_SETTINGS* cors);
 };
 
 } // end of namespace

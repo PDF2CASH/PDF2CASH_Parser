@@ -23,13 +23,8 @@ QString generatePDFName(const QByteArray buffer)
     return QString(fileName.toStdString().substr(fileName.toStdString().length()/2).c_str()) + ".pdf";
 }
 
-void ParserController::service(HttpRequest& request, HttpResponse& response, pdf2cash::Parser* parser)
+void ParserController::service(HttpRequest& request, HttpResponse& response, CORS_SETTINGS* cors)
 {
-    //response.setHeader("Content-Type", "application/json");
-    //QTemporaryFile* file=request.getUploadedFile("test");
-    //file=request.getUploadedFile("test.pdf");
-
-
     auto uploadedFiles = request.getUploadedFileMap();
     if(uploadedFiles.size() > 0)
     {
@@ -79,20 +74,77 @@ void ParserController::service(HttpRequest& request, HttpResponse& response, pdf
                                     QString message = p->ConvertToJsonBuffer();
 
                                     response.setStatus(200);
-                                    response.setHeader("Access-Control-Allow-Origin", "*");
-                                    response.setHeader("content-length", message.size());
+
+                                    if(cors != nullptr)
+                                    {
+                                        if(cors->useOrigin)
+                                            response.setHeader("Access-Control-Allow-Origin", cors->originData.toStdString().c_str());
+                                        if(cors->useMethods)
+                                            response.setHeader("Access-Control-Allow-Methods", cors->methodsData.toStdString().c_str());
+                                        if(cors->useHeaders)
+                                            response.setHeader("Access-Control-Allow-Headers", cors->headersData.toStdString().c_str());
+                                        if(cors->useMaxAge)
+                                            response.setHeader("Access-Control-Max-Age", cors->maxAgeData);
+                                    }
+
+                                    response.setHeader("Content-Type", "application/json");
+                                    response.setHeader("Content-Length", message.size());
 
                                     response.write(message.toStdString().c_str());
                                 }
                                 else
                                 {
+                                    if(cors->useOrigin)
+                                        response.setHeader("Access-Control-Allow-Origin", cors->originData.toStdString().c_str());
+                                    if(cors->useMethods)
+                                        response.setHeader("Access-Control-Allow-Methods", cors->methodsData.toStdString().c_str());
+                                    if(cors->useHeaders)
+                                        response.setHeader("Access-Control-Allow-Headers", cors->headersData.toStdString().c_str());
+                                    if(cors->useMaxAge)
+                                        response.setHeader("Access-Control-Max-Age", cors->maxAgeData);
+
+                                    response.setStatus(400);
                                     printf("Failed to read xml or get invoice data.\n");
+
+                                    response.write("Failed to read xml or get invoice data.");
                                 }
+                            }
+                            else
+                            {
+                                if(cors->useOrigin)
+                                    response.setHeader("Access-Control-Allow-Origin", cors->originData.toStdString().c_str());
+                                if(cors->useMethods)
+                                    response.setHeader("Access-Control-Allow-Methods", cors->methodsData.toStdString().c_str());
+                                if(cors->useHeaders)
+                                    response.setHeader("Access-Control-Allow-Headers", cors->headersData.toStdString().c_str());
+                                if(cors->useMaxAge)
+                                    response.setHeader("Access-Control-Max-Age", cors->maxAgeData);
+
+                                response.setStatus(400);
+                                printf("Failed to process from PDF received.\n");
+
+                                response.write("Failed to process from PDF received.");
                             }
 
                             delete p;
                             //p->Clear();
                         }
+                    }
+                    else
+                    {
+                        if(cors->useOrigin)
+                            response.setHeader("Access-Control-Allow-Origin", cors->originData.toStdString().c_str());
+                        if(cors->useMethods)
+                            response.setHeader("Access-Control-Allow-Methods", cors->methodsData.toStdString().c_str());
+                        if(cors->useHeaders)
+                            response.setHeader("Access-Control-Allow-Headers", cors->headersData.toStdString().c_str());
+                        if(cors->useMaxAge)
+                            response.setHeader("Access-Control-Max-Age", cors->maxAgeData);
+
+                        response.setStatus(400);
+                        printf("Failed to process from PDF received.\n");
+
+                        response.write("Failed to process from PDF received.");
                     }
 
                     if(pdf.isOpen())
@@ -102,14 +154,59 @@ void ParserController::service(HttpRequest& request, HttpResponse& response, pdf
                     QFile::remove(fileName.replace(".pdf", ".xml"));
                     QFile::remove(fileName.replace(".pdf", ".json"));
                 }
+                else
+                {
+                    if(cors->useOrigin)
+                        response.setHeader("Access-Control-Allow-Origin", cors->originData.toStdString().c_str());
+                    if(cors->useMethods)
+                        response.setHeader("Access-Control-Allow-Methods", cors->methodsData.toStdString().c_str());
+                    if(cors->useHeaders)
+                        response.setHeader("Access-Control-Allow-Headers", cors->headersData.toStdString().c_str());
+                    if(cors->useMaxAge)
+                        response.setHeader("Access-Control-Max-Age", cors->maxAgeData);
 
+                    response.setStatus(400);
+                    printf("Invalid bytes received.\n");
 
+                    response.write("Invalid bytes received.");
+                }
+            }
+            else
+            {
+                if(cors->useOrigin)
+                    response.setHeader("Access-Control-Allow-Origin", cors->originData.toStdString().c_str());
+                if(cors->useMethods)
+                    response.setHeader("Access-Control-Allow-Methods", cors->methodsData.toStdString().c_str());
+                if(cors->useHeaders)
+                    response.setHeader("Access-Control-Allow-Headers", cors->headersData.toStdString().c_str());
+                if(cors->useMaxAge)
+                    response.setHeader("Access-Control-Max-Age", cors->maxAgeData);
+
+                response.setStatus(400);
+                printf("Invalid temporary file received.\n");
+
+                response.write("Invalid temporary file received.");
             }
 
             fileName = "";
         }
     }
+    else
+    {
+        if(cors->useOrigin)
+            response.setHeader("Access-Control-Allow-Origin", cors->originData.toStdString().c_str());
+        if(cors->useMethods)
+            response.setHeader("Access-Control-Allow-Methods", cors->methodsData.toStdString().c_str());
+        if(cors->useHeaders)
+            response.setHeader("Access-Control-Allow-Headers", cors->headersData.toStdString().c_str());
+        if(cors->useMaxAge)
+            response.setHeader("Access-Control-Max-Age", cors->maxAgeData);
 
+        response.setStatus(400);
+        printf("Failed to receive PDF, maybe received 0 PDF's.\n");
+
+        response.write("Failed to receive PDF, maybe received 0 PDF's.");
+    }
 
 
     //if (file)

@@ -20,12 +20,25 @@ extern FileLogger* logger;
 /** Controller for static files */
 extern StaticFileController* staticFileController;
 
-RequestMapper::RequestMapper(QObject* parent)
+RequestMapper::RequestMapper(QSettings* settingsCors, QObject* parent)
     :HttpRequestHandler(parent)
 {
     qDebug("RequestMapper: created");
 
-    _parser = new pdf2cash::Parser();
+    _settingCors = new CORS_SETTINGS();
+    _settingCors->useOrigin = (settingsCors->value("useOrigin", "1").toInt() == 1) ? true : false;
+    _settingCors->useMethods = (settingsCors->value("useMethods", "1").toInt() == 1) ? true : false;
+    _settingCors->useHeaders = (settingsCors->value("useHeaders", "1").toInt() == 1) ? true : false;
+    _settingCors->useMaxAge = (settingsCors->value("useMaxAge", "1").toInt() == 1) ? true : false;
+
+    _settingCors->originData = settingsCors->value("origin", "*").toString();
+
+    QString methodStr = settingsCors->value("methods", "POST, GET, OPTIONS, DELETE").toString();
+    methodStr = methodStr.replace(":", ", ");
+
+    _settingCors->methodsData = QString(methodStr);
+    _settingCors->headersData = settingsCors->value("headers", "Content-Type").toString();
+    _settingCors->maxAgeData = settingsCors->value("maxAge", "60000").toInt();
 }
 
 
@@ -69,7 +82,7 @@ void RequestMapper::service(HttpRequest& request, HttpResponse& response)
 
     else if(path.startsWith("/parser"))
     {
-        ParserController().service(request, response, _parser);
+        ParserController().service(request, response, _settingCors);
     }
 
     // All other pathes are mapped to the static file controller.

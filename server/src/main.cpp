@@ -110,7 +110,11 @@ int main(int argc, char *argv[])
     // Configure and start the TCP listener
     QSettings* listenerSettings=new QSettings(configFileName,QSettings::IniFormat,&app);
     listenerSettings->beginGroup("listener");
-    new HttpListener(listenerSettings,new RequestMapper(&app),&app);
+
+    QSettings* corsSettings=new QSettings(configFileName,QSettings::IniFormat,&app);
+    corsSettings->beginGroup("cors");
+
+    new HttpListener(listenerSettings,new RequestMapper(corsSettings, &app),&app);
 
     qWarning("Application has started");
 
