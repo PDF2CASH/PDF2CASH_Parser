@@ -1,0 +1,25 @@
+sudo: required
+services:
+  - docker
+
+language: python
+
+branches:
+  only:
+    - master
+    - development
+    - /^.*release.*$/
+
+python:
+  - "3.6"
+
+deploy:
+  - provider: script
+    script: bash scripts/sendZip.sh
+    on:
+      branch: master
+
+addons:
+  apt:
+    packages:
+      - docker-ce
